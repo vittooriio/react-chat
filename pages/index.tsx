@@ -5,21 +5,13 @@ import {
   limit,
   orderBy,
   query,
-  setDoc,
-  doc,
   addDoc,
 } from "firebase/firestore";
 import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { initializeApp } from "firebase/app";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { useCollectionData } from "react-firebase-hooks/firestore";
-import {
-  FormEvent,
-  FormEventHandler,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import { FormEvent, RefObject, useEffect, useRef, useState } from "react";
 import { serverTimestamp } from "@firebase/database";
 
 const app = initializeApp({
@@ -38,18 +30,9 @@ const db = getFirestore(app);
 const SignIn = () => {
   const signInWithGoogle = () => {
     const provider = new GoogleAuthProvider();
-    signInWithPopup(auth, provider)
-      .then((result) => {
-        const credential = GoogleAuthProvider.credentialFromResult(result);
-        const token = credential?.accessToken;
-        const user = result.user;
-      })
-      .catch((error) => {
-        const errorCode = error.code;
-        const errorMessage = error.message;
-        const email = error.customData.email;
-        const credential = GoogleAuthProvider.credentialFromError(error);
-      });
+    signInWithPopup(auth, provider).catch((error) => {
+      alert(error);
+    });
   };
 
   return (
@@ -95,7 +78,7 @@ const SignOut = () => {
 };
 
 const ChatRoom = () => {
-  const dummy = useRef();
+  const dummy: RefObject<any> = useRef();
   const uid = auth.currentUser?.uid;
   const messagesRef = collection(db, "messages");
   const queryFetch = query(messagesRef, orderBy("createdAt"), limit(25));
