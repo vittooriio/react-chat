@@ -81,18 +81,17 @@ const ChatRoom = () => {
   const dummy: RefObject<any> = useRef();
   const uid = auth.currentUser?.uid;
   const messagesRef = collection(db, "messages");
-  const queryFetch = query(messagesRef, orderBy("createdAt"), limit(25));
+  const queryFetch = query(messagesRef, orderBy("createdAt"));
   const [messages] = useCollectionData(queryFetch);
 
-  useEffect(
-    () =>
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      dummy?.current?.scrollIntoView({
-        behavior: "smooth",
-      }),
-    [messages]
-  );
+  useEffect(() => {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    console.log(messages);
+    dummy?.current?.scrollIntoView({
+      behavior: "smooth",
+    });
+  }, [messages]);
 
   const cssClasses = {
     sender: {
@@ -150,7 +149,7 @@ const ChatCommands = () => {
     e.preventDefault();
     await addDoc(collection(db, "messages"), {
       text: formValue,
-      createdAt: serverTimestamp(),
+      createdAt: Date.now(),
       uid: auth.currentUser?.uid,
       photoURL: auth.currentUser?.photoURL,
       username: auth.currentUser?.displayName,
